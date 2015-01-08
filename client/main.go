@@ -45,13 +45,13 @@ func main() {
 				log.Fatal("key error")
 			}
 
-			cfg := &config{
+			cfg := config{
 				ID:         "Bluek404",
 				PrivateKey: privateKey,
 				PublicKey:  publicKey,
 			}
 
-			data, err := modules.Encode(cfg)
+			data, err := modules.Encode(configs{serverHost: cfg})
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -76,16 +76,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var cfg config
-	err = modules.Decode(data, &cfg)
+	var cfgs configs
+	err = modules.Decode(data, &cfgs)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(cfg)
+	log.Println(cfgs[serverHost])
 }
 
 // 返回32位hash
 func sha3Sum256(data []byte) []byte { return sha3.New256().Sum(data)[len(data):] }
+
+type configs map[string]config
 
 type config struct {
 	ID         string
